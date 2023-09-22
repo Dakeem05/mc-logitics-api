@@ -17,6 +17,7 @@ return new class extends Migration
                     ->constrained('users')
                     ->cascadeOnDelete();
             $table->string('reference');
+            $table->boolean('used')->default(false);
             $table->string('email');
             $table->string('status')->nullable();
             $table->string('amount');

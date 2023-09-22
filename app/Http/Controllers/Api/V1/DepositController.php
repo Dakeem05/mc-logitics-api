@@ -90,14 +90,22 @@ class DepositController extends Controller
     $payment = json_decode($record->getBody())->data;
     // return ;
     $deposit = Deposit::where('reference', $payment->reference)->first();
-    $renew = $deposit->update([
-        'status' => $payment->status
-    ]);
-    $user = User::where('id', $deposit->user_id)->first();
-    $user->update([
-        'naira_balance' => $user->naira_balance + ($payment->amount/100)
-    ]);
-    return $user;
+
+    if($deposit->used == false) {
+        $renew = $deposit->update([
+            'status' => $payment->status
+        ]);
+        $user = User::where('id', $deposit->user_id)->first();
+        $user->update([
+            'naira_balance' => $user->naira_balance + ($payment->amount/100)
+        ]);
+        $deposit->update([
+            'used' => true
+        ]);
+        return $user;
+    } else {
+        return ApiResponse::errorResponse('This deposite has already reflected in your balance');
+    }
     // if (!$payment) {
     //     return response()->json(['message' => 'Payment not found'], 404);
     // }

@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('investment_naira1s', function (Blueprint $table) {
             $table->id();
             $table->string('amount');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')
+            ->constrained('users')
+            ->cascadeOnDelete();
             // $table->timestamp('created_at');
             $table->unique(['user_id', 'created_at']);
             $table->string('cummulative_interest')->nullable();

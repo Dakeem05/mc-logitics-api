@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-    }
+        $schedule->command('app:delete-expired-naira-investments')->daily();
+        $schedule->command('app:update-naira-investments')->daily();
+    }   
 
     /**
      * Register the commands for the application.
