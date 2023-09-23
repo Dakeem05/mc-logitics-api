@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Api\V1;
 
 use App\Models\InvestmentNaira1;
+use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -35,6 +36,12 @@ class UpdateNairaInvestments extends Command
             $interest = $amount * 0.05;
             $investment->update([
                 'cummulative_interest' => $investment->cummulative_interest + $interest
+            ]);
+            $invoice = Invoice::create([
+                'user_id' => $user->id,
+                'amount' => $interest,
+                'reason' => 'Daily income',
+                'isPositive' => true,
             ]);
             $user->update([
                 'naira_balance' => $user->naira_balance + $interest

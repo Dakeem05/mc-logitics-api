@@ -91,7 +91,7 @@ class AuthController extends Controller
     public function login (Request $request)
     {
         $rules = [
-            'username' => ['username'],
+            'username' => ['required'],
             // 'phone' => ['sometimes'],
             'password' => ['required'],
         ];

@@ -34,7 +34,7 @@ class WithdrawController extends Controller
         $rules = [
             'name' => ['required'],
             // 'type' =>'nuban',
-            'account_number' => ['required'],
+            'account_number' => ['required', 'numeric', 'digits:10'],
             'bank_code' => ['required'],
         ];
         $validation = Validator::make($request->all(), $rules);

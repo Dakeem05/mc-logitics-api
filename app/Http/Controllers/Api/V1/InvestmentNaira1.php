@@ -64,7 +64,7 @@ class InvestmentNaira1 extends Controller
         $referer = User::where('ref_code', $user->referer_code)->first();
         if($user->has_invested == true) {
 
-            if ( $user->naira_balance > $request->amount){
+            if ( $user->naira_balance >= $request->amount){
                 $user->update([
                     'has_invested' =>true,
                     'naira_balance' =>$user->naira_balance - $request->amount,
@@ -84,10 +84,10 @@ class InvestmentNaira1 extends Controller
                 ]);
    
             } else {
-               return ApiResponse::errorResponse('Your balance is not enough, please recharge');
+               return ApiResponse::errorResponse('Your balance is not enough, please recharge.. Your balance is: '.$user->naira_balance);
             }
         } else {
-            if ( $user->naira_balance > $request->amount){
+            if ( $user->naira_balance >= $request->amount){
                 $user->update([
                     'has_invested' =>true,
                     'naira_balance' =>$user->naira_balance - $request->amount,
@@ -116,7 +116,7 @@ class InvestmentNaira1 extends Controller
                 ]);
    
             } else {
-               return ApiResponse::errorResponse('Your balance is not enough, please recharge');
+               return ApiResponse::errorResponse('Your balance is not enough, please recharge.. Your balance is: '.$user->naira_balance);
             }
         }
 
