@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DepositController;
 use App\Http\Controllers\Api\V1\InvestmentNaira1;
+use App\Http\Controllers\Api\V1\WithdrawController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,9 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
 
     Route::group(['middleware' => 'auth'], function ($router) {
         Route::post('/deposit', [DepositController::class, 'initializePayment']);
+        Route::get('/fetchBank', [WithdrawController::class, 'fetchBanks']);
+        Route::post('/createRecipient', [WithdrawController::class, 'createRecipient']);
+        Route::post('/initiateTransfer', [WithdrawController::class, 'initiateTransfer']);
         Route::post('/invest', [InvestmentNaira1::class, 'store']);
         Route::get('/confirmPaystack/{id}', [DepositController::class, 'handleCallback']);
     });

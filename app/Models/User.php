@@ -22,6 +22,12 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'phone',
         'ref_code',
+        'referer_code',
+        'has_invested',
+        'username',
+        'user_bank_name',
+        'bank_name',
+        'account_number',
         'asset_password',
         'usdt_balance',
         'naira_balance',
@@ -49,6 +55,7 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'has_invested' => 'boolean',
     ];
 
 

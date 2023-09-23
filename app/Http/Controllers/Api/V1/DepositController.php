@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Helper\V1\ApiResponse;
 use App\Models\Deposit;
+use App\Models\Invoice;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -95,9 +96,16 @@ class DepositController extends Controller
         $renew = $deposit->update([
             'status' => $payment->status
         ]);
-        $user = User::where('id', $deposit->user_id)->first();
+        $userId = Auth::id();
+        $user = User::where('id', $userId)->first();
         $user->update([
             'naira_balance' => $user->naira_balance + ($payment->amount/100)
+        ]);
+        $invoice = Invoice::create([
+            'user_id' => $user->id,
+            'amount' => $payment->amount/100,
+            'reason' => 'Deposit',
+            'isPositive' => true,
         ]);
         $deposit->update([
             'used' => true

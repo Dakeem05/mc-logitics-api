@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('username')->unique();
             // $table->string('account_name')->nullable();
             $table->enum('role', ['client', 'admin'])->default('client');
             $table->string('transfer_recipient')->nullable();
@@ -21,6 +22,11 @@ return new class extends Migration
             $table->string('email')->nullable()->unique();
             $table->string('phone')->nullable()->unique();
             $table->string('ref_code')->unique();
+            $table->string('user_bank_name')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('referer_code')->nullable();
+            $table->boolean('has_invested')->default(false);
             $table->string('usdt_balance')->nullable();
             // $table->string('usdt_investment')->nullable();
             $table->string('naira_balance')->nullable();

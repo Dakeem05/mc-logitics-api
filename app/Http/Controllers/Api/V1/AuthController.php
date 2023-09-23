@@ -46,9 +46,11 @@ class AuthController extends Controller
 
         $rules = [
             'email' => ['sometimes', 'email',  'unique:'.User::class],
-            'phone' => ['sometimes', 'digits:11', 'min:11', 'unique:'.User::class],
-            'password' => ['required', 'min:8', "max:30", 'confirmed', Rules\Password::defaults()],
+            'phone' => ['sometimes', 'digits:10', 'min:10', 'unique:'.User::class],
+            'username' => ['required', 'min:6', 'max:8',  'unique:'.User::class],
             'asset_password' => ['required', 'min:5', 'max:6'],
+            'password' => ['required', 'min:8', "max:30", 'confirmed', Rules\Password::defaults()],
+            'ref_code' => ['sometimes'],
         ];
         $validation = Validator::make( $request->all(), $rules );
         if ( $validation->fails() ) {
@@ -57,9 +59,14 @@ class AuthController extends Controller
                     "message" => $validation->errors()->first()
                 ]);
         }
+
+        // $referrer = User::where('ref_code', $request->ref_code);
+        // $u
         $randomNumber = random_int(100000, 999999);
         $user = User::create([
             'ref_code' => $randomNumber,
+            'referer_code' => $request->ref_code,
+            'username' => $request->username,
             'phone' => $request->phone,
             'email'  => $request->email,
             'password' => Hash::make($request->password),
@@ -84,8 +91,8 @@ class AuthController extends Controller
     public function login (Request $request)
     {
         $rules = [
-            'email' => ['sometimes'],
-            'phone' => ['sometimes'],
+            'username' => ['username'],
+            // 'phone' => ['sometimes'],
             'password' => ['required'],
         ];
         $validation = Validator::make( $request->all(), $rules );
@@ -95,7 +102,7 @@ class AuthController extends Controller
                     "message" => $validation->errors()->first()
                 ]);
         }
-        $credentials = $request->only(['email', 'password', 'phone']);
+        $credentials = $request->only(['username', 'password']);
 
         $token = Auth::attempt($credentials);
 
