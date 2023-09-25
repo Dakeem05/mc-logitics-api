@@ -41,8 +41,9 @@ class UpdateUsdtInvestments extends Command
             ]);
             $invoice = Invoice::create([
                 'user_id' => $user->id,
+                'is_usdt' => true,
                 'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
-                'amount' => '$'.$interest,
+                'amount' => $interest,
                 'reason' => 'Daily income',
                 'isPositive' => true,
             ]);

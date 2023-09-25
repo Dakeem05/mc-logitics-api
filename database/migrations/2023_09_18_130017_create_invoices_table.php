@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                     ->constrained('users')
                     ->cascadeOnDelete();
+            $table->boolean('is_usdt')->default(false);
             $table->string('amount');
             $table->dateTime('date');
             $table->boolean('isPositive')->default(false);

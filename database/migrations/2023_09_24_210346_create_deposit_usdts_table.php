@@ -18,6 +18,7 @@ return new class extends Migration
             ->cascadeOnDelete();
             $table->string('payment_id');
             $table->string('price');
+            $table->boolean('is_usdt')->default(true);
             $table->boolean('used')->default(false);
             $table->string('pay_address');
             $table->string('status')->nullable();

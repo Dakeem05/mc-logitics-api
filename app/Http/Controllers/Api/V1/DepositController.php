@@ -75,6 +75,7 @@ class DepositController extends Controller
             Deposit::create([
                 'user_id' => Auth::id(),
                 'email' => $request->email,
+                'is_usdt' => false,
                 "reference" => $random,
                 'amount' => $request->amount,
             ]);
@@ -104,8 +105,9 @@ class DepositController extends Controller
         ]);
         $invoice = Invoice::create([
             'user_id' => $user->id,
+            'is_usdt' => false,
             'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
-            'amount' => 'N'.$payment->amount/100,
+            'amount' => $payment->amount/100,
             'reason' => 'Deposit',
             'isPositive' => true,
         ]);
@@ -153,6 +155,7 @@ class DepositController extends Controller
             'user_id' => $user->id,
             'price' => $request->amount,
             'payment_id' => $res->payment_id,
+            'is_usdt' => true,
             'pay_address' => $res->pay_address,
             'pay_amount' => $res->pay_amount,
         ]);
@@ -177,6 +180,7 @@ class DepositController extends Controller
                 $deposit->update([
                     'status' => 'success',
                     'used' => true,
+                    'is_usdt' => true,
                     'actually_paid' => ceil($res->outcome_amount),
                     'pay_amount' => $res->pay_amount,
                 ]);
@@ -184,8 +188,9 @@ class DepositController extends Controller
                 $user = User::where('id', $user_id)->first();
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'is_usdt' => true,
                     'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
-                    'amount' => '$'.ceil($res->outcome_amount),
+                    'amount' => ceil($res->outcome_amount),
                     'reason' => 'Deposit',
                     'isPositive' => true,
                 ]);

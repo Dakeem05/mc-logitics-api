@@ -74,15 +74,17 @@ class InvestmentUsd1 extends Controller
 
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'is_usdt' => true,
                     'date' => $start_date,
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentUsd1::create([
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'user_id' => Auth::id(),
                     'start_date' => $start_date,
+                    'is_usdt' => true,
                     'days' => 1,
                     'end_date' => $end_period,
                 ]);
@@ -100,16 +102,18 @@ class InvestmentUsd1 extends Controller
                 ]);
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'is_usdt' => true,
                     'date' => $start_date,
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentUsd1::create([
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'user_id' => Auth::id(),
                     'days' => 1,
                     'start_date' => $start_date,
+                    'is_usdt' => true,
                     'end_date' => $end_period,
                 ]);
 
@@ -120,8 +124,9 @@ class InvestmentUsd1 extends Controller
                 ]);
                 $invoice = Invoice::create([
                     'date' => $start_date,
+                    'is_usdt' => true,
                     'user_id' => $referer->id,
-                    'amount' => '$'.$request->amount * 0.1,
+                    'amount' => $request->amount * 0.1,
                     'reason' => 'Referral bonus',
                     'isPositive' => true,
                 ]);}

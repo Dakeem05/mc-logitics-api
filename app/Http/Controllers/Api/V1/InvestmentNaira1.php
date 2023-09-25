@@ -77,13 +77,15 @@ class InvestmentNaira1 extends Controller
 
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'is_usdt' => false,
                     'date' => $start_date,
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentNaira1::create([
                     'amount' => $request->amount,
+                    'is_usdt' => false,
                     'user_id' => Auth::id(),
                     'days' => 1,
                     'start_date' => $start_date,
@@ -101,13 +103,15 @@ class InvestmentNaira1 extends Controller
                 ]);
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'is_usdt' => false,
                     'date' => $start_date,
-                    'amount' => '$'.$request->amount,
+                    'amount' => $request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentNaira1::create([
                     'amount' => $request->amount,
+                    'is_usdt' => false,
                     'user_id' => Auth::id(),
                     'days' => 1,
                     'start_date' => $start_date,
@@ -121,7 +125,8 @@ class InvestmentNaira1 extends Controller
                     $invoice = Invoice::create([
                         'date' => $start_date,
                         'user_id' => $referer->id,
-                        'amount' => 'N'.$request->amount * 0.1,
+                    'is_usdt' => false,
+                        'amount' => $request->amount * 0.1,
                         'reason' => 'Referral bonus',
                         'isPositive' => true,
                     ]);

@@ -41,6 +41,7 @@ class UpdateNairaInvestments extends Command
             ]);
             $invoice = Invoice::create([
                 'user_id' => $user->id,
+                'is_usdt' => false,
                 'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
                 'amount' => 'N'.$interest,
                 'reason' => 'Daily income',

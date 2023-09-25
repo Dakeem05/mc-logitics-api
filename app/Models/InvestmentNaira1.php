@@ -13,6 +13,7 @@ class InvestmentNaira1 extends Model
 
     protected $cast = [
         'start_date' => 'datetime',
+        'is_usdt' => 'boolean',
         'end_date' => 'datetime'
     ];
 }

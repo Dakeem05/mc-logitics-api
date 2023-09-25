@@ -13,6 +13,7 @@ class Invoice extends Model
 
     protected $casts =[
         'isPositive ' => 'boolean',
-        'date' => 'datetime'
+        'date' => 'datetime',
+        'is_usdt' => 'boolean',
     ];
 }

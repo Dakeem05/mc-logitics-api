@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')
             ->constrained('users')
             ->cascadeOnDelete();
+            $table->boolean('is_usdt')->default(false);
             // $table->timestamp('created_at');
             $table->unique(['user_id', 'created_at']);
             $table->string('cummulative_interest')->nullable();
