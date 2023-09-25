@@ -20,6 +20,7 @@ return new class extends Migration
             // $table->timestamp('created_at');
             $table->unique(['user_id', 'created_at']);
             $table->string('cummulative_interest')->nullable();
+            $table->string('days');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->timestamps();

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Helper\V1\ApiResponse;
+use App\Models\InvestmentNaira1;
+use App\Models\InvestmentUsd1;
+use App\Models\Invoice;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
@@ -62,6 +66,7 @@ class AuthController extends Controller
 
         // $referrer = User::where('ref_code', $request->ref_code);
         // $u
+
         $randomNumber = random_int(100000, 999999);
         $user = User::create([
             'ref_code' => $randomNumber,
@@ -72,6 +77,25 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'asset_password' => Hash::make($request->asset_password)
         ]);
+
+        if($request->ref_code){
+            $referrer = User::where('ref_code', $request->ref_code)->first();
+
+            $team = Team::where('user_id', $referrer->id)->first();
+
+            if($team){
+                $team->update([
+                    'team_size' => $team->team_size + 1
+                ]);
+            } else{
+
+                $team = Team::create([
+                    'user_id' => $referrer->id,
+                    'team_size' => 1,
+                ]);
+            }
+
+        }
         
         $token = Auth::login($user);
 
@@ -117,7 +141,43 @@ class AuthController extends Controller
 
     public function show(string $id)
     {
-        //
+        
+    }
+    public function getUser()
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            return ApiResponse::successResponse($user);
+        } else {
+            return ApiResponse::errorResponse('invalid');
+        }
+    }
+    public function getInvestments()
+    {
+        $id = Auth::id();
+        $investments = InvestmentUsd1::where('user_id', $id)->latest()->get();
+        $investmentsNaira = InvestmentNaira1::where('user_id', $id)->latest()->get();
+
+        
+        return array_merge(json_decode($investments), json_decode($investmentsNaira));
+        // return response()->json([
+        //     'naira' =>$investmentsNaira,
+        //     'usd' =>$investments,
+        // ]);
+        // if ($user) {
+        //     return ApiResponse::successResponse($user);
+        // } else {
+        //     return ApiResponse::errorResponse('invalid');
+        // }
+    }
+    public function getTransactions()
+    {
+        $id = Auth::id();
+        $investments = Invoice::where('user_id', $id)->latest()->get();
+
+        
+        return $investments;
     }
 
     public function logout(Request $request)

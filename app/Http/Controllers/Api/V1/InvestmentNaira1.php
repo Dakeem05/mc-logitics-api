@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Helper\V1\ApiResponse;
 use App\Http\Controllers\Api\V1\InvestmentNaira1 as V1InvestmentNaira1;
 use App\Models\InvestmentNaira1 as ModelsInvestmentNaira1;
+use App\Models\InvestmentUsd1;
 use App\Models\Invoice;
 use App\Models\User;
 use Carbon\Carbon;
@@ -50,12 +51,16 @@ class InvestmentNaira1 extends Controller
         $userId = Auth::id();
 
         
-        $recordCount = ModelsInvestmentNaira1::where('user_id', $userId)->count();
-        if ($recordCount >= 3) {
+        $recordCount = InvestmentUsd1::where('user_id', $userId)->count();
+        $recordCountNaira = ModelsInvestmentNaira1::where('user_id', $userId)->count();
+
+        $both = $recordCount + $recordCountNaira;
+        if ($both >= 3) {
             return ApiResponse::errorResponse([
                 'message' => 'Maximum of three investments'
             ]);
         }
+        
         $start_date = date('Y-m-d H:i:s', strtotime(Carbon::now()));
         $end_period = date('Y-m-d H:i:s', strtotime("36 day", strtotime(Carbon::now())));
         // // return $start_date;
@@ -72,13 +77,15 @@ class InvestmentNaira1 extends Controller
 
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'date' => $start_date,
+                    'amount' => '$'.$request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentNaira1::create([
                     'amount' => $request->amount,
                     'user_id' => Auth::id(),
+                    'days' => 1,
                     'start_date' => $start_date,
                     'end_date' => $end_period,
                 ]);
@@ -94,26 +101,33 @@ class InvestmentNaira1 extends Controller
                 ]);
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'date' => $start_date,
+                    'amount' => '$'.$request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
-                ]);
-                $bonus = $request->amount * 0.1;
-                $referer->update([
-                    'naira_balance' => $referer->naira_balance + $bonus
-                ]);
-                $invoice = Invoice::create([
-                    'user_id' => $referer->id,
-                    'amount' => $request->amount * 0.1,
-                    'reason' => 'Referral bonus',
-                    'isPositive' => true,
                 ]);
                 $invest = ModelsInvestmentNaira1::create([
                     'amount' => $request->amount,
                     'user_id' => Auth::id(),
+                    'days' => 1,
                     'start_date' => $start_date,
                     'end_date' => $end_period,
                 ]);
+                if($referer){
+                    $bonus = $request->amount * 0.1;
+                    $referer->update([
+                        'naira_balance' => $referer->naira_balance + $bonus
+                    ]);
+                    $invoice = Invoice::create([
+                        'date' => $start_date,
+                        'user_id' => $referer->id,
+                        'amount' => 'N'.$request->amount * 0.1,
+                        'reason' => 'Referral bonus',
+                        'isPositive' => true,
+                    ]);
+                }
+               
+             
    
             } else {
                return ApiResponse::errorResponse('Your balance is not enough, please recharge.. Your balance is: '.$user->naira_balance);

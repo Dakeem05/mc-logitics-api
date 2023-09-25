@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Helper\V1\ApiResponse;
+use App\Models\InvestmentNaira1;
 use App\Models\InvestmentUsd1 as ModelsInvestmentUsd1;
 use App\Models\Invoice;
 use App\Models\User;
@@ -49,7 +50,10 @@ class InvestmentUsd1 extends Controller
 
         
         $recordCount = ModelsInvestmentUsd1::where('user_id', $userId)->count();
-        if ($recordCount >= 3) {
+        $recordCountNaira = InvestmentNaira1::where('user_id', $userId)->count();
+
+        $both = $recordCount + $recordCountNaira;
+        if ($both >= 3) {
             return ApiResponse::errorResponse([
                 'message' => 'Maximum of three investments'
             ]);
@@ -70,14 +74,16 @@ class InvestmentUsd1 extends Controller
 
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'date' => $start_date,
+                    'amount' => '$'.$request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
                 $invest = ModelsInvestmentUsd1::create([
-                    'amount' => $request->amount,
+                    'amount' => '$'.$request->amount,
                     'user_id' => Auth::id(),
                     'start_date' => $start_date,
+                    'days' => 1,
                     'end_date' => $end_period,
                 ]);
    
@@ -94,28 +100,33 @@ class InvestmentUsd1 extends Controller
                 ]);
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'date' => $start_date,
+                    'amount' => '$'.$request->amount,
                     'reason' => 'Investment',
                     'isPositive' => false,
                 ]);
+                $invest = ModelsInvestmentUsd1::create([
+                    'amount' => '$'.$request->amount,
+                    'user_id' => Auth::id(),
+                    'days' => 1,
+                    'start_date' => $start_date,
+                    'end_date' => $end_period,
+                ]);
+
+                if($referer){
                 $bonus = $request->amount * 0.1;
                 $referer->update([
                     'usdt_balance' => $referer->usdt_balance + $bonus
                 ]);
                 $invoice = Invoice::create([
+                    'date' => $start_date,
                     'user_id' => $referer->id,
-                    'amount' => $request->amount * 0.1,
+                    'amount' => '$'.$request->amount * 0.1,
                     'reason' => 'Referral bonus',
                     'isPositive' => true,
-                ]);
-                $invest = ModelsInvestmentUsd1::create([
-                    'amount' => $request->amount,
-                    'user_id' => Auth::id(),
-                    'start_date' => $start_date,
-                    'end_date' => $end_period,
-                ]);
+                ]);}
    
-                return ApiResponse::errorResponse(' is not enough, please recharge.. Your balance is: '.$user->usdt_balance);
+                // return ApiResponse::errorResponse(' is not enough, please recharge.. Your balance is: '.$user->usdt_balance);
             } else {
                return ApiResponse::errorResponse('Your balance is not enough, please recharge.. Your balance is: '.$user->usdt_balance);
             }

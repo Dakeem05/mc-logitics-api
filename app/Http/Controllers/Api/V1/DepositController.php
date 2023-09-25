@@ -8,6 +8,7 @@ use App\Models\Deposit;
 use App\Models\DepositUsdt;
 use App\Models\Invoice;
 use App\Models\User;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class DepositController extends Controller
     public function initializePayment(Request $request)
     {
         $rules = [
-            'email' => ['required'],
+            'email' => ['sometimes'],
             'amount' =>  'required|numeric|min:5000',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -103,6 +104,7 @@ class DepositController extends Controller
         ]);
         $invoice = Invoice::create([
             'user_id' => $user->id,
+            'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
             'amount' => 'N'.$payment->amount/100,
             'reason' => 'Deposit',
             'isPositive' => true,
@@ -182,6 +184,7 @@ class DepositController extends Controller
                 $user = User::where('id', $user_id)->first();
                 $invoice = Invoice::create([
                     'user_id' => $user->id,
+                    'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
                     'amount' => '$'.ceil($res->outcome_amount),
                     'reason' => 'Deposit',
                     'isPositive' => true,
@@ -195,7 +198,7 @@ class DepositController extends Controller
 
             }
         } else {
-            return ApiResponse::errorResponse('Payment not completed');
+            return ApiResponse::errorResponse('Payment not completed, wait for a few minutes before retrying');
         }
         return $res;
     }

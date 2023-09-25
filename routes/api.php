@@ -26,6 +26,9 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/register', [AuthController::class, 'store']);
         Route::get('/logout', [AuthController::class, 'logout']);
+        Route::get('/getUser', [AuthController::class, 'getUser']);
+        Route::get('/getInvestments', [AuthController::class, 'getInvestments']);
+        Route::get('/getTransactions', [AuthController::class, 'getTransactions']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/bindEmail', [AuthController::class, 'bindEmail']);
         Route::post('/changePassword', [AuthController::class, 'changePassword']);

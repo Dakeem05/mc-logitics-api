@@ -2,20 +2,20 @@
 
 namespace App\Console\Commands\Api\V1;
 
-use App\Models\InvestmentNaira1;
+use App\Models\InvestmentUsd1;
 use App\Models\Invoice;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class UpdateNairaInvestments extends Command
+class UpdateUsdtInvestments extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:update-naira-investments';
+    protected $signature = 'app:update-usdt-investments';
 
     /**
      * The console command description.
@@ -29,7 +29,7 @@ class UpdateNairaInvestments extends Command
      */
     public function handle()
     {
-        $investments = InvestmentNaira1::get();
+        $investments = InvestmentUsd1::get();
         $invest = [];
         foreach ($investments as $investment) {
             $user = User::where('id', $investment->user_id)->first();
@@ -42,12 +42,12 @@ class UpdateNairaInvestments extends Command
             $invoice = Invoice::create([
                 'user_id' => $user->id,
                 'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
-                'amount' => 'N'.$interest,
+                'amount' => '$'.$interest,
                 'reason' => 'Daily income',
                 'isPositive' => true,
             ]);
             $user->update([
-                'naira_balance' => $user->naira_balance + $interest
+                'naira_balance' => $user->usdt_balance + $interest
             ]);
             $invest[]  = $interest;
         }
