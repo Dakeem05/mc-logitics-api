@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('investment_usd1s', function (Blueprint $table) {
+        Schema::create('deposit_usdts', function (Blueprint $table) {
             $table->id();
-            $table->string('amount');
             $table->foreignId('user_id')
             ->constrained('users')
             ->cascadeOnDelete();
-            // $table->timestamp('created_at');
-            $table->unique(['user_id', 'created_at']);
-            $table->string('cummulative_interest')->nullable();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->string('payment_id');
+            $table->string('price');
+            $table->boolean('used')->default(false);
+            $table->string('pay_address');
+            $table->string('status')->nullable();
+            $table->string('pay_amount');
+            $table->string('actually_paid')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('investment_usd1s');
+        Schema::dropIfExists('deposit_usdts');
     }
 };

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DepositController;
 use App\Http\Controllers\Api\V1\InvestmentNaira1;
+use App\Http\Controllers\Api\V1\InvestmentUsd1;
 use App\Http\Controllers\Api\V1\WithdrawController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,16 +27,22 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::post('/register', [AuthController::class, 'store']);
         Route::get('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::post('/bindEmail', [AuthController::class, 'bindEmail']);
+        Route::post('/changePassword', [AuthController::class, 'changePassword']);
+        Route::post('/changeAssetPassword', [AuthController::class, 'changeAssetPassword']);
         Route::post('/me', [AuthController::class, 'me']);
     
     });
 
     Route::group(['middleware' => 'auth'], function ($router) {
         Route::post('/deposit', [DepositController::class, 'initializePayment']);
+        Route::post('/createUsdtPayment', [DepositController::class, 'createUsdtPayment']);
+        Route::get('/getUsdtPayment/{id}', [DepositController::class, 'getUsdtPayment']);
         Route::get('/fetchBank', [WithdrawController::class, 'fetchBanks']);
         Route::post('/createRecipient', [WithdrawController::class, 'createRecipient']);
         Route::post('/initiateTransfer', [WithdrawController::class, 'initiateTransfer']);
         Route::post('/invest', [InvestmentNaira1::class, 'store']);
+        Route::post('/investUsdt', [InvestmentUsd1::class, 'store']);
         Route::get('/confirmPaystack/{id}', [DepositController::class, 'handleCallback']);
     });
 

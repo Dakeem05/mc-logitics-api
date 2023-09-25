@@ -165,6 +165,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
+        PrevailExcel\Nowpayments\NowpaymentsServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,

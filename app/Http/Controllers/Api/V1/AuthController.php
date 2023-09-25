@@ -156,6 +156,79 @@ class AuthController extends Controller
         //
     }
 
+    public function changeAssetPassword(Request $request)
+    {
+        $rules = [
+            'old_password' => 'required',
+            'new_password' =>  ['required', 'min:5', 'max:6'],
+        ];
+        $id = Auth::id();
+
+        $user = User::where('id', $id)->first();
+        if(!Hash::check($request->old_password, $user->asset_password)){
+            return ApiResponse::errorResponse('Incorrect asset password');
+        } 
+        $validation = Validator::make($request->all(), $rules);
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                    "message" => $validation->errors()->first()
+                ]);
+        }
+
+
+        $user->update([
+            'asset_password' => Hash::make($request->new_password)
+        ]);
+    }
+    public function changePassword(Request $request)
+    {
+        $rules = [
+            'old_password' => 'required',
+            'new_password' => ['required', 'min:8', "max:30", 'confirmed', Rules\Password::defaults()],
+        ];
+        $id = Auth::id();
+
+        $user = User::where('id', $id)->first();
+        if(!Hash::check($request->old_password, $user->password)){
+            return ApiResponse::errorResponse('Incorrect password');
+        } 
+        $validation = Validator::make($request->all(), $rules);
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                    "message" => $validation->errors()->first()
+                ]);
+        }
+
+
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+    }
+    public function bindEmail(Request $request)
+    {
+        $rules = [
+            'email' => 'required|email',
+            'password' => 'required'
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                    "message" => $validation->errors()->first()
+                ]);
+        }
+
+        $id = Auth::id();
+        
+        $user = User::where('id', $id)->first();
+        if(!Hash::check($request->password, $user->password)){
+            return ApiResponse::errorResponse('Incorrect password');
+        } 
+
+        $user->update([
+            'email' => $request->email
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */
