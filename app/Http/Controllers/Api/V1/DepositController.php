@@ -143,7 +143,7 @@ class DepositController extends Controller
             "price_amount" => $request->amount,
             // "case" => 'failed',
             "price_currency" => "usd",
-            "pay_currency" => "usdterc20",
+            "pay_currency" => "usdttrc20",
             "ipn_callback_url" => "https://nowpayments.io",
             "order_id" => $random.'-'.$randomNumber,
             "order_description" => "Deposit"

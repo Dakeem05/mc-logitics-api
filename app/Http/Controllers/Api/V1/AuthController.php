@@ -66,7 +66,7 @@ class AuthController extends Controller
 
         // $referrer = User::where('ref_code', $request->ref_code);
         // $u
-
+        // return $request->phone;
         $randomNumber = random_int(100000, 999999);
         $user = User::create([
             'ref_code' => $randomNumber,
