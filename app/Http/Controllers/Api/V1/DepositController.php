@@ -58,10 +58,16 @@ class DepositController extends Controller
         }
         $random = Str::random(20);
         $randomNumber = random_int(10000, 99999);
+        $email = '';
+        if ($request->email){
+            $email = $request->email;
+        } else {
+            $email = 'useremail@gmail.com';
+        }
         $data = array(
             "amount" => $request->amount * 100,
             "reference" => $random,
-            "email" => $request->email,
+            "email" => $email,
             "currency" => "NGN",
             "id" => $randomNumber,
             'callback_url' => 'http://localhost:5173/callback'
@@ -74,7 +80,7 @@ class DepositController extends Controller
            $paymentLink = $paystack->getAuthorizationUrl($data);
             Deposit::create([
                 'user_id' => Auth::id(),
-                'email' => $request->email,
+                'email' => $email,
                 'is_usdt' => false,
                 "reference" => $random,
                 'amount' => $request->amount,

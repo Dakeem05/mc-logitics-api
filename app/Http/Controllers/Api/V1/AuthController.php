@@ -9,6 +9,8 @@ use App\Models\InvestmentUsd1;
 use App\Models\Invoice;
 use App\Models\Team;
 use App\Models\User;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -176,7 +178,22 @@ class AuthController extends Controller
         $id = Auth::id();
         $investments = Invoice::where('user_id', $id)->latest()->get();
 
-        
+        $invoices = [];
+
+        // foreach ($investments as $info) {
+        //     // Parse the date using Carbon and format it
+        //     // $dateTime = DateTime::createFromFormat('d/m/Y g:i:s A', $info->date);
+        //     $dateTime = new DateTime($info->date);
+
+        //     // Format the date as 'd/m/Y g:i:s A'
+        //     $formattedDate = $dateTime->format('d/m/Y g:i:s A');
+        //     // Update the date attribute with the formatted date
+        //     $info->update([
+        //         'date' => $formattedDate
+        //     ]);
+            
+        //     $invoices[] = $info;
+        // } 
         return $investments;
     }
 
