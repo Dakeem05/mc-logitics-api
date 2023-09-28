@@ -219,41 +219,55 @@ class WithdrawController extends Controller
         }
         $tax = $request->amount * 0.1;
         $amount = $request->amount - $tax;
-        $tokenResult = Http::withHeaders([
-            'Authorization' => 'Bearer '.env('NOWPAYMENTS_TEST_API_KEY'),
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-            'Content-Type' => 'application/json',
-            ])
-            ->post('https://api-sandbox.nowpayments.io/v1/auth', [
-                // ->post('https://api.nowpayments.io/v1/payment', [
-                    "email" => "edidiongsamuel14@gmail.com",
-                    "password" => "Iamawebdev@01" 
+
+         $withdraw = UsdtWithdrawal::create([
+            'user_id'=> Auth::id(),
+            'amount' => $amount,
+            'date' =>  date("Y-m-d"),
+            'address' => $request->wallet
+        ]);
+
+        return ApiResponse::successResponse('Withdrawal has been queued for processing');
+
+        //Will occur from admin side
+
+        // $tokenResult = Http::withHeaders([
+        //     'Authorization' => 'Bearer '.env('NOWPAYMENTS_TEST_API_KEY'),
+        //     'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
+        //     // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        //     'Content-Type' => 'application/json',
+        //     ])
+        //     ->post('https://api-sandbox.nowpayments.io/v1/auth', [
+        //         // ->post('https://api.nowpayments.io/v1/payment', [
+        //             "email" => "edidiongsamuel14@gmail.com",
+        //             "password" => "Iamawebdev@01" 
                   
-                ]);
+        //         ]);
 
-        $respToken = json_decode($tokenResult->getBody());
+        // $respToken = json_decode($tokenResult->getBody());
 
-        // return $respToken->token;
-        $result = Http::withHeaders([
-            'Authorization' => 'Bearer ' .$respToken->token,
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-            'Content-Type' => 'application/json',
-            ])
-            ->post('https://api-sandbox.nowpayments.io/v1/payout', [
-                // ->post('https://api.nowpayments.io/v1/payment', [
-                    "ipn_callback_url" => "https://nowpayments.io",
-                    "withdrawals" => [
-                            "address" => $request->wallet,
-                            "currency" => "usdttrc20",
-                            'amount' => $amount,
-                            "ipn_callback_url" => "https://nowpayments.io"
-                        ],
+        // // return $respToken->token;
+        // $result = Http::withHeaders([
+        //     'Authorization' => 'Bearer ' .$respToken->token,
+        //     'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
+        //     // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+        //     'Content-Type' => 'application/json',
+        //     ])
+        //     ->post('https://api-sandbox.nowpayments.io/v1/payout', [
+        //         // ->post('https://api.nowpayments.io/v1/payment', [
+        //             "ipn_callback_url" => "https://nowpayments.io",
+        //             "withdrawals" => [
+        //                     "address" => $request->wallet,
+        //                     "currency" => "usdttrc20",
+        //                     'amount' => $amount,
+        //                     "ipn_callback_url" => "https://nowpayments.io"
+        //                 ],
                   
-                ]);
+        //         ]);
 
-        $resp = json_decode($result->getBody());
+        // $resp = json_decode($result->getBody());
+
+
 
         // $withdraw = UsdtWithdrawal::create([
         //     'user_id'=> Auth::id(),
@@ -263,7 +277,9 @@ class WithdrawController extends Controller
         //     'payout_id' => $resp->id,
         //     'batch_id' => $resp->withdrawals->batch_withdrawal_id,
         // ]);
-                return $resp;
+                // return $resp;
+
+
                 // return $withdraw;
         
         // $client = new Client();
@@ -295,5 +311,14 @@ class WithdrawController extends Controller
         // }
          
     }
+    }
+
+    public function getUsdtWithdrawal () 
+    {
+        // Get all usdt withdrawals
+        $id = Auth::id();
+        $withdrawals = UsdtWithdrawal::where('user_id', $id)->latest()->paginate(10);
+
+        return ApiResponse::successResponse($withdrawals);
     }
 }

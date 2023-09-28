@@ -46,8 +46,9 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::post('/deposit', [DepositController::class, 'initializePayment']);
         Route::post('/createUsdtPayment', [DepositController::class, 'createUsdtPayment']);
         Route::get('/getUsdtPayment/{id}', [DepositController::class, 'getUsdtPayment']);
-        Route::get('/fetchBank', [WithdrawController::class, 'fetchBanks']);
         Route::post('/createRecipient', [WithdrawController::class, 'createRecipient']);
+        Route::get('/fetchBank', [WithdrawController::class, 'fetchBanks']);
+        Route::get('/getUsdtWithdrawal', [WithdrawController::class, 'getUsdtWithdrawal']);
         Route::post('/initiateTransfer', [WithdrawController::class, 'initiateTransfer']);
         Route::post('/initiateUsdt', [WithdrawController::class, 'initiateUsdt']);
         Route::post('/invest', [InvestmentNaira1::class, 'store']);
@@ -57,6 +58,10 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::get('/admin', [AdminController::class, 'index']);
         Route::get('/admin/transaction', [AdminController::class, 'transaction']);
         Route::get('/admin/users', [AdminController::class, 'users']);
+        Route::get('/admin/allUsers', [AdminController::class, 'allUsers']);
+        Route::get('/admin/acceptWithdrawal/{id}', [AdminController::class, 'acceptWithdrawal']);
+        Route::get('/admin/acceptAllWithdrawal', [AdminController::class, 'acceptAllWithdrawal']);
+        Route::get('/admin/withdrawal', [AdminController::class, 'getUsdtWithdrawal']);
     });
 
 });

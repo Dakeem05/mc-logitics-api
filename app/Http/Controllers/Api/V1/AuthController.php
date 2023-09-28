@@ -176,7 +176,7 @@ class AuthController extends Controller
     public function getTransactions()
     {
         $id = Auth::id();
-        $investments = Invoice::where('user_id', $id)->latest()->get();
+        $investments = Invoice::where('user_id', $id)->latest()->paginate(10);
 
         $invoices = [];
 
