@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DepositController;
 use App\Http\Controllers\Api\V1\InvestmentNaira1;
@@ -53,6 +54,9 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::post('/investUsdt', [InvestmentUsd1::class, 'store']);
         Route::get('/confirmPaystack/{id}', [DepositController::class, 'handleCallback']);
         Route::get('/transactions', [InvoiceController::class, 'show3']);
+        Route::get('/admin', [AdminController::class, 'index']);
+        Route::get('/admin/transaction', [AdminController::class, 'transaction']);
+        Route::get('/admin/users', [AdminController::class, 'users']);
     });
 
 });
