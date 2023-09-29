@@ -139,80 +139,202 @@ class DepositController extends Controller
         }
         $random = Str::random(5);
         $randomNumber = random_int(10000, 99999);
-        $response = Http::withHeaders([
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-            'Content-Type' => 'application/json',
-        ])
-        ->post('https://api-sandbox.nowpayments.io/v1/payment', [
+        $response = Http::post('https://payid19.com/api/v1/create_invoice', [
         // ->post('https://api.nowpayments.io/v1/payment', [
-            "price_amount" => $request->amount,
-            // "case" => 'failed',
-            "price_currency" => "usd",
-            "pay_currency" => "usdttrc20",
-            "ipn_callback_url" => "https://nowpayments.io",
-            "order_id" => $random.'-'.$randomNumber,
-            "order_description" => "Deposit"
+            'public_key' => env('PAYID_PUBLIC_KEY'),
+            'private_key' => env('PAYID_SECRET_KEY'),
+            'email' => 'email@email.com',
+            'price_amount' => $request->amount,
+            'price_currency' => 'USD',
+            'merchant_id' => 5,
+            'order_id' => $randomNumber,
+            'customer_id' => 12,
+            'test' => 1,
+            'title' => 'title',
+            'description' => 'description',
+            'add_fee_to_price' => 0,
+            'cancel_url' => 'http://localhost:5173/recharge',
+            'success_url' => 'http://localhost:5173/callback',
+            'callback_url' => 'http://localhost:5173/callback',
+            'expiration_date' => 6,
+            //'margin_ratio' => 1
         ]);
-
-        $res = json_decode($response->getBody());
         $user = Auth::user();
-        $payment = DepositUsdt::create([
-            'user_id' => $user->id,
-            'price' => $request->amount,
-            'payment_id' => $res->payment_id,
-            'is_usdt' => true,
-            'pay_address' => $res->pay_address,
-            'pay_amount' => $res->pay_amount,
-        ]);
-        return $payment;        
+        $res = json_decode($response->getBody());
+        // $payment = DepositUsdt::create([
+        //             'user_id' => $user->id,
+        //             'price' => $request->amount,
+        //             'payment_id' => $randomNumber,
+        //             'is_usdt' => true,
+        //             'pay_address' => $res->pay_address,
+        //             'pay_amount' => $res->pay_amount,
+        //         ]);
+        //         return $payment; 
+
+        return $res;
+
+//         'public_key' => 'yourpublickey',
+// 'private_key' => 'yourprivatekey',
+// 'email' => 'email@email.com',
+// 'price_amount' => 725,
+// 'price_currency' => 'USD',
+// 'merchant_id' => 5,
+// 'order_id' => 11,
+// 'customer_id' => 12,
+// 'test' => 1,
+// 'title' => 'title',
+// 'description' => 'description',
+// 'add_fee_to_price' => 1,
+// 'cancel_url' => 'https://yourcancelurl',
+// 'success_url' => 'https://yoursuccessurl',
+// 'callback_url' => 'http://yourcallbackurl',
+// 'expiration_date' => 6,
+// //'margin_ratio' => 1
+
+        // $res = json_decode($response->getBody());
+        // $user = Auth::user();
+        // $payment = DepositUsdt::create([
+        //     'user_id' => $user->id,
+        //     'price' => $request->amount,
+        //     'payment_id' => $res->payment_id,
+        //     'is_usdt' => true,
+        //     'pay_address' => $res->pay_address,
+        //     'pay_amount' => $res->pay_amount,
+        // ]);
+        // return $payment;        
         // echo $payment;        
     }
+    // {
+    //     $rules = [
+    //         'amount' =>  'required|numeric|min:15',
+    //     ];
+    //     $validation = Validator::make($request->all(), $rules);
+    //     if ( $validation->fails() ) {
+    //         return ApiResponse::validationError([
+    //                 "message" => $validation->errors()->first()
+    //             ]);
+    //     }
+    //     $random = Str::random(5);
+    //     $randomNumber = random_int(10000, 99999);
+    //     $response = Http::withHeaders([
+    //         'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
+    //         // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+    //         'Content-Type' => 'application/json',
+    //     ])
+    //     ->post('https://api-sandbox.nowpayments.io/v1/payment', [
+    //     // ->post('https://api.nowpayments.io/v1/payment', [
+    //         "price_amount" => $request->amount,
+    //         // "case" => 'failed',
+    //         "price_currency" => "usd",
+    //         "pay_currency" => "usdttrc20",
+    //         "ipn_callback_url" => "https://nowpayments.io",
+    //         "order_id" => $random.'-'.$randomNumber,
+    //         "order_description" => "Deposit"
+    //     ]);
+
+    //     $res = json_decode($response->getBody());
+    //     $user = Auth::user();
+    //     $payment = DepositUsdt::create([
+    //         'user_id' => $user->id,
+    //         'price' => $request->amount,
+    //         'payment_id' => $res->payment_id,
+    //         'is_usdt' => true,
+    //         'pay_address' => $res->pay_address,
+    //         'pay_amount' => $res->pay_amount,
+    //     ]);
+    //     return $payment;        
+    //     // echo $payment;        
+    // }
 
     public function getUsdtPayment (string $id) 
     {
-        $response = Http::withHeaders([
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-        ])
-        ->get('https://api-sandbox.nowpayments.io/v1/payment/'.$id);
+        $response = Http::post('https://payid19.com/api/v1/get_invoices', [
+            // ->post('https://api.nowpayments.io/v1/payment', [
+                'public_key' => env('PAYID_PUBLIC_KEY'),
+                'private_key' => env('PAYID_SECRET_KEY'),
+                'order_id' => $id,
+                //'margin_ratio' => 1
+            ]);
         
         $res = json_decode($response->getBody());
 
         $deposit = DepositUsdt::where('payment_id', $id)->first();
         
-        if($res->payment_status == 'finished') {
-            if($deposit->used == false) {
-                $deposit->update([
-                    'status' => 'success',
-                    'used' => true,
-                    'is_usdt' => true,
-                    'actually_paid' => ceil($res->outcome_amount),
-                    'pay_amount' => $res->pay_amount,
-                ]);
-                $user_id = Auth::id();
-                $user = User::where('id', $user_id)->first();
-                $invoice = Invoice::create([
-                    'user_id' => $user->id,
-                    'is_usdt' => true,
-                    'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
-                    'amount' => ceil($res->outcome_amount),
-                    'reason' => 'Deposit',
-                    'isPositive' => true,
-                ]);
-                $user->update([
-                    'usdt_balance' => $user->usdt_balance + ceil($res->outcome_amount)
-                ]);
-                return ApiResponse::successResponse('Payment successful');
-            } else {
-                return ApiResponse::errorResponse('Payment already reflected');
+        // if($res->payment_status == 'finished') {
+        //     if($deposit->used == false) {
+        //         $deposit->update([
+        //             'status' => 'success',
+        //             'used' => true,
+        //             'is_usdt' => true,
+        //             'actually_paid' => ceil($res->outcome_amount),
+        //             'pay_amount' => $res->pay_amount,
+        //         ]);
+        //         $user_id = Auth::id();
+        //         $user = User::where('id', $user_id)->first();
+        //         $invoice = Invoice::create([
+        //             'user_id' => $user->id,
+        //             'is_usdt' => true,
+        //             'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
+        //             'amount' => ceil($res->outcome_amount),
+        //             'reason' => 'Deposit',
+        //             'isPositive' => true,
+        //         ]);
+        //         $user->update([
+        //             'usdt_balance' => $user->usdt_balance + ceil($res->outcome_amount)
+        //         ]);
+        //         return ApiResponse::successResponse('Payment successful');
+        //     } else {
+        //         return ApiResponse::errorResponse('Payment already reflected');
 
-            }
-        } else {
-            return ApiResponse::errorResponse('Payment not completed, wait for a few minutes before retrying');
-        }
-        return $res;
+        //     }
+        // } else {
+        //     return ApiResponse::errorResponse('Payment not completed, wait for a few minutes before retrying');
+        // }
+        return $response;
     }
+    // {
+    //     $response = Http::withHeaders([
+    //         'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
+    //         // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
+    //     ])
+    //     ->get('https://api-sandbox.nowpayments.io/v1/payment/'.$id);
+        
+    //     $res = json_decode($response->getBody());
+
+    //     $deposit = DepositUsdt::where('payment_id', $id)->first();
+        
+    //     if($res->payment_status == 'finished') {
+    //         if($deposit->used == false) {
+    //             $deposit->update([
+    //                 'status' => 'success',
+    //                 'used' => true,
+    //                 'is_usdt' => true,
+    //                 'actually_paid' => ceil($res->outcome_amount),
+    //                 'pay_amount' => $res->pay_amount,
+    //             ]);
+    //             $user_id = Auth::id();
+    //             $user = User::where('id', $user_id)->first();
+    //             $invoice = Invoice::create([
+    //                 'user_id' => $user->id,
+    //                 'is_usdt' => true,
+    //                 'date' => date('Y-m-d H:i:s', strtotime(Carbon::now())),
+    //                 'amount' => ceil($res->outcome_amount),
+    //                 'reason' => 'Deposit',
+    //                 'isPositive' => true,
+    //             ]);
+    //             $user->update([
+    //                 'usdt_balance' => $user->usdt_balance + ceil($res->outcome_amount)
+    //             ]);
+    //             return ApiResponse::successResponse('Payment successful');
+    //         } else {
+    //             return ApiResponse::errorResponse('Payment already reflected');
+
+    //         }
+    //     } else {
+    //         return ApiResponse::errorResponse('Payment not completed, wait for a few minutes before retrying');
+    //     }
+    //     return $res;
+    // }
     // {
         
     //     $client = new Client();

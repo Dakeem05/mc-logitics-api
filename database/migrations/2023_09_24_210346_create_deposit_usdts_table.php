@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('price');
             $table->boolean('is_usdt')->default(true);
             $table->boolean('used')->default(false);
-            $table->string('pay_address');
             $table->string('status')->nullable();
             $table->string('pay_amount');
             $table->string('actually_paid')->nullable();

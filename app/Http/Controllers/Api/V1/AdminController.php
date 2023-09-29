@@ -160,4 +160,17 @@ class AdminController extends Controller
 
         return ApiResponse::successResponse($resp);
     }
+
+    public function getBalance ()
+    {
+
+            $response = Http::post('https://payid19.com/api/v1/get_balance', [
+                // ->post('https://api.nowpayments.io/v1/payment', [
+                    'public_key' => env('PAYID_PUBLIC_KEY'),
+                    'private_key' => env('PAYID_SECRET_KEY')
+                    //'margin_ratio' => 1
+                ]);
+            return $response;
+            $res = json_decode($response->getBody());
+    }
 }
