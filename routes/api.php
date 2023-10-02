@@ -60,6 +60,8 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::get('/admin/users', [AdminController::class, 'users']);
         Route::get('/admin/balance', [AdminController::class, 'getBalance']);
         Route::get('/admin/allUsers', [AdminController::class, 'allUsers']);
+        Route::get('/admin/makeAdmin/{id}', [AdminController::class, 'makeAdmin']);
+        Route::get('/admin/unmakeAdmin/{id}', [AdminController::class, 'unmakeAdmin']);
         Route::get('/admin/acceptWithdrawal/{id}', [AdminController::class, 'acceptWithdrawal']);
         Route::get('/admin/acceptAllWithdrawal', [AdminController::class, 'acceptAllWithdrawal']);
         Route::get('/admin/withdrawal', [AdminController::class, 'getUsdtWithdrawal']);

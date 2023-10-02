@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54544e2448e245d84f8fcc89f5efbac7",
+    "content-hash": "38b67563d342ebd9c78608aec84efc93",
     "packages": [
         {
             "name": "brick/math",
@@ -5958,6 +5958,63 @@
                 "source": "https://github.com/unicodeveloper/laravel-paystack/tree/1.1.0"
             },
             "time": "2023-03-17T08:56:13+00:00"
+        },
+        {
+            "name": "unipayment/client",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/UniCryptoLab/UniPaymentClient.PHP.git",
+                "reference": "91220231aca1d8d3eecf84b9d0446a2bfeddb5ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/UniCryptoLab/UniPaymentClient.PHP/zipball/91220231aca1d8d3eecf84b9d0446a2bfeddb5ee",
+                "reference": "91220231aca1d8d3eecf84b9d0446a2bfeddb5ee",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UniPayment\\Client\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "vincent",
+                    "homepage": "https://unipayment.io"
+                }
+            ],
+            "description": "This SDK provides a convenient abstraction of UniPayment's Gateway API and allows developers to focus on payment flow/e-commerce integration rather than on the specific details of client-server interaction using the raw API.",
+            "homepage": "https://unipayment.io",
+            "keywords": [
+                "USDC",
+                "USDT",
+                "bitcoin",
+                "eth",
+                "gateway",
+                "payment",
+                "unipayment"
+            ],
+            "support": {
+                "issues": "https://github.com/UniCryptoLab/UniPaymentClient.PHP/issues",
+                "source": "https://github.com/UniCryptoLab/UniPaymentClient.PHP/tree/v1.1.1"
+            },
+            "time": "2023-09-18T05:14:22+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

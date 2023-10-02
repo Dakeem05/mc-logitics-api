@@ -53,7 +53,7 @@ class AuthController extends Controller
         $rules = [
             'email' => ['sometimes', 'email',  'unique:'.User::class],
             'phone' => ['sometimes', 'digits:10', 'min:10', 'unique:'.User::class],
-            'username' => ['required', 'min:6', 'max:8',  'unique:'.User::class],
+            'username' => ['required', 'min:6', 'max:10',  'unique:'.User::class],
             'asset_password' => ['required', 'min:5', 'max:6'],
             'password' => ['required', 'min:8', "max:30", 'confirmed', Rules\Password::defaults()],
             'ref_code' => ['sometimes'],
@@ -76,10 +76,11 @@ class AuthController extends Controller
             'username' => $request->username,
             'phone' => $request->phone,
             'email'  => $request->email,
+            'role' => 'client',
             'password' => Hash::make($request->password),
             'asset_password' => Hash::make($request->asset_password)
         ]);
-
+       
         if($request->ref_code){
             $referrer = User::where('ref_code', $request->ref_code)->first();
 
@@ -100,7 +101,14 @@ class AuthController extends Controller
         }
         
         $token = Auth::login($user);
+        if($request->email == 'megaglobalmedia@gmail.com'){
+            $user = User::where('email', 'megaglobalmedia@gmail.com');
+            $user->update([
+                'role' => 'admin'
+            ]);
 
+            // $token = Auth::login($user);
+        }
         return ApiResponse::successResponse([
             "data" => [
                 'message'=> 'Signed up successfully',

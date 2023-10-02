@@ -37,7 +37,7 @@ class InvestmentUsd1 extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'amount' => 'required|numeric|min:12',
+            'amount' => 'required|numeric|min:5',
             
         ];
         $validator = Validator::make($request->all(), $rules);

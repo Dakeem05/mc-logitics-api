@@ -34,7 +34,7 @@ class UpdateUsdtInvestments extends Command
         foreach ($investments as $investment) {
             $user = User::where('id', $investment->user_id)->first();
             $amount = $investment->amount;
-            $interest = $amount * 0.05;
+            $interest = $amount * 0.06;
             $investment->update([
                 'cummulative_interest' => $investment->cummulative_interest + $interest,
                 'days' => $investment->days + 1,

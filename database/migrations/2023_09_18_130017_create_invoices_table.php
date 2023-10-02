@@ -18,7 +18,8 @@ return new class extends Migration
                     ->cascadeOnDelete();
             $table->boolean('is_usdt')->default(false);
             $table->string('amount');
-            $table->dateTime('date');
+            $table->string('date');
+            // $table->dateTime('date');
             $table->boolean('isPositive')->default(false);
             $table->string('reason');
             $table->timestamps();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Helper\V1\ApiResponse;
+use App\Models\DepositUsdt;
 use App\Models\Invoice;
 use App\Models\UsdtWithdrawal;
 use App\Models\User;
@@ -15,7 +16,7 @@ class AdminController extends Controller
     public function index ()
     {
         $user = User::latest()->take(10)->get();
-        $invoice = Invoice::latest()->take(10)->get();
+        $invoice = DepositUsdt::where('status', 'success')->latest()->take(10)->get();
         $count = User::count();
         $active = User::where('has_invested', true)->count();
         $inactive = User::where('has_invested', false)->count();
@@ -40,14 +41,34 @@ class AdminController extends Controller
 
     public function transaction ()
     {
-        $invoice = Invoice::latest()->take(10)->get();
+        $invoice = Invoice::latest()->paginate(20);
 
         return $invoice;
     }
 
+    public function makeAdmin (string $id)
+    {
+        $user = User::where('id', $id)->first();
+
+        $user->update([
+            'role' => 'admin'
+        ]);
+        // return $invoice;
+    }
+
+    public function unmakeAdmin (string $id)
+    {
+        $user = User::where('id', $id)->first();
+
+        $user->update([
+            'role' => 'client'
+        ]);
+        // return $invoice;
+    }
+
     public function users ()
     {
-        $user = User::latest()->take(10)->get();
+        $user = User::latest()->take(3)->get();
 
         return $user;
     }
