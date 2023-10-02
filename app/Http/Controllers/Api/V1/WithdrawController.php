@@ -239,7 +239,7 @@ class WithdrawController extends Controller
     {
         $rules = [
             'wallet' => 'required',
-            'amount' => 'required|numeric|min:4',
+            'amount' => 'required|numeric|min:10',
             'asset_password' => 'required'
         ];
 

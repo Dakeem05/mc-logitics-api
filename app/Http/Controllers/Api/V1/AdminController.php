@@ -86,49 +86,17 @@ class AdminController extends Controller
         return ApiResponse::successResponse($withdrawals);
     }
 
-    public function acceptWithdrawal (string $id) 
+    public function completeWithdrawal (string $id) 
     {
-        $withdrawals = UsdtWithdrawal::where('id', $id)->first();
+        $withdrawal = UsdtWithdrawal::where('id', $id)->first();
 
-          //Will occur from admin side
-
-        $tokenResult = Http::withHeaders([
-            'Authorization' => 'Bearer '.env('NOWPAYMENTS_TEST_API_KEY'),
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-            'Content-Type' => 'application/json',
-            ])
-            ->post('https://api-sandbox.nowpayments.io/v1/auth', [
-                // ->post('https://api.nowpayments.io/v1/payment', [
-                    "email" => "edidiongsamuel14@gmail.com",
-                    "password" => "Iamawebdev@01" 
-                  
-                ]);
-
-        $respToken = json_decode($tokenResult->getBody());
-
-        // return $respToken->token;
-        $result = Http::withHeaders([
-            'Authorization' => 'Bearer ' .$respToken->token,
-            'x-api-key' => env('NOWPAYMENTS_TEST_API_KEY'),
-            // 'x-api-key' => env('NOWPAYMENTS_API_KEY'),
-            'Content-Type' => 'application/json',
-            ])
-            ->post('https://api-sandbox.nowpayments.io/v1/payout', [
-                // ->post('https://api.nowpayments.io/v1/payment', [
-                    "ipn_callback_url" => "https://nowpayments.io",
-                    "withdrawals" => [
-                            "address" => $withdrawals->wallet,
-                            "currency" => "usdttrc20",
-                            'amount' => $withdrawals->amount,
-                            "ipn_callback_url" => "https://nowpayments.io"
-                        ],
-                  
-                ]);
-
-        $resp = json_decode($result->getBody());
-
-        return ApiResponse::successResponse($resp);
+        $user = User::where('id', $withdrawal->user_id)->first();
+        $user->update([
+            'usdt_balance' => $user->usdt_balance - $withdrawal->amount
+        ]);
+        $withdrawal->update([
+            'is_verified' => true,
+        ]);
     }
 
     public function acceptAllWithdrawal () 

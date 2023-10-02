@@ -62,7 +62,7 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::get('/admin/allUsers', [AdminController::class, 'allUsers']);
         Route::get('/admin/makeAdmin/{id}', [AdminController::class, 'makeAdmin']);
         Route::get('/admin/unmakeAdmin/{id}', [AdminController::class, 'unmakeAdmin']);
-        Route::get('/admin/acceptWithdrawal/{id}', [AdminController::class, 'acceptWithdrawal']);
+        Route::get('/admin/completeWithdrawal/{id}', [AdminController::class, 'completeWithdrawal']);
         Route::get('/admin/acceptAllWithdrawal', [AdminController::class, 'acceptAllWithdrawal']);
         Route::get('/admin/withdrawal', [AdminController::class, 'getUsdtWithdrawal']);
     });

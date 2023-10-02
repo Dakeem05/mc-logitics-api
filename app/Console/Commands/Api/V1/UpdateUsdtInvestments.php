@@ -48,7 +48,7 @@ class UpdateUsdtInvestments extends Command
                 'isPositive' => true,
             ]);
             $user->update([
-                'naira_balance' => $user->usdt_balance + $interest
+                'usdt_balance' => $user->usdt_balance + $interest
             ]);
             $invest[]  = $interest;
         }
