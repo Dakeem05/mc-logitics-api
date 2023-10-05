@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Notifications\Api\V1\ApiResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -26,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'has_invested',
         'username',
         'user_bank_name',
+        'email_verified_at',
         'bank_name',
         'role',
         'account_number',
@@ -59,6 +63,16 @@ class User extends Authenticatable implements JWTSubject
         'has_invested' => 'boolean',
     ];
 
+    public function forgot_otp ():HasOne
+    {
+        return $this->hasOne(ForgotPasswordOtp::class);
+    }
+
+    public function sendApiEmailForgotPasswordNotification()
+    {
+    //    $this->hasOne(ForgotPasswordOtp::class);
+       $this->notify(new ApiResetPassword);
+    }
 
     public function getJWTIdentifier()
     {

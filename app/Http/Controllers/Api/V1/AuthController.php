@@ -11,12 +11,15 @@ use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+
+use function PHPUnit\Framework\isNull;
 
 class AuthController extends Controller
 {
@@ -25,7 +28,10 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => [
             'login', 
             'store',
-            'logout',
+            'resendCode',
+            'resetPassword',
+            'verifyForgot',
+            'forgotPassword',
         ]]);
     }
     /**
@@ -145,14 +151,110 @@ class AuthController extends Controller
             return ApiResponse::successResponse($token, 200);
                     
         } else{
-            return ApiResponse::errorResponse("User doesn't exist");
+            return ApiResponse::errorResponse("User doesn't exist or wrong details");
         }
         } 
 
-    public function show(string $id)
+    public function forgotPassword(Request $request)
     {
+        $rules = [
+            'email' => ['required', 'email',  'exists:'.User::class],
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
         
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                "message" => $validation->errors()->first()
+            ]);
+        } else {
+            $user = User::where('email', $request->email)->first();
+            $user->sendApiEmailForgotPasswordNotification();
+            return ApiResponse::successResponse('Sent, check you mail');
+            // return $user->id;
+            
+        }
     }
+    public function resendCode(Request $request)
+    {
+        $rules = [
+            'email' => ['required', 'email',  'exists:'.User::class],
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+        
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                "message" => $validation->errors()->first()
+            ]);
+        } else {
+            $user = User::where('email', $request->email)->first();
+            $data = $user->forgot_otp->delete();
+            $user->sendApiEmailForgotPasswordNotification();
+            return ApiResponse::successResponse('Sent, check you mail');
+            // return $user->id;
+            
+        }
+    }
+
+    public function verifyForgot (Request $request)
+    {
+        $rules = [
+            'code' => 'digits:6|required',
+        ];
+        $user = User::where('email' , $request->email)->first();
+        // return $request->email;
+        $validation = Validator::make( $request->only('code'), $rules );
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                "message" => $validation->errors()->first()
+            ]);
+        }
+        else{
+        //     $user  = Auth::user();
+
+
+            $digit = $user->forgot_otp->otp;
+            // return $request->code;
+            if($request->code == $digit){
+                $user->update(['email_verified_at' => Carbon::now()]);
+                $data = $user->forgot_otp->delete();
+                return ApiResponse::successResponse(['Updated successfully'], 200);
+            } else {
+                return  ApiResponse::errorResponse('Wrong code, resend?');
+                
+            }
+        }
+    }
+    
+    public function resetPassword (Request $request)
+    {
+        $user = User::where('email' , $request->email)->first();
+        $rules = [
+            'password' => ['required', 'min:8', "max:30", 'confirmed']
+        ];
+
+        $validation = Validator::make( $request->all(), $rules );
+
+        if ( $validation->fails() ) {
+            return ApiResponse::validationError([
+                "message" => $validation->errors()->first()
+            ]);
+        } else{
+            // return $user->email_verified_at;
+            if($user->email_verified_at !== null) {
+                $user->update([
+                    'password' => Hash::make($request->password),
+                    'email_verified_at' => null
+                ]);
+                return ApiResponse::successResponse(['Password changed successfully']);
+            } else {
+                return  ApiResponse::errorResponse('Have not verified your email');
+            }
+        }
+
+    }
+
     public function getUser()
     {
         $user = Auth::user();
@@ -171,15 +273,6 @@ class AuthController extends Controller
 
         
         return array_merge(json_decode($investments), json_decode($investmentsNaira));
-        // return response()->json([
-        //     'naira' =>$investmentsNaira,
-        //     'usd' =>$investments,
-        // ]);
-        // if ($user) {
-        //     return ApiResponse::successResponse($user);
-        // } else {
-        //     return ApiResponse::errorResponse('invalid');
-        // }
     }
     public function getTransactions()
     {
@@ -188,20 +281,7 @@ class AuthController extends Controller
 
         $invoices = [];
 
-        // foreach ($investments as $info) {
-        //     // Parse the date using Carbon and format it
-        //     // $dateTime = DateTime::createFromFormat('d/m/Y g:i:s A', $info->date);
-        //     $dateTime = new DateTime($info->date);
-
-        //     // Format the date as 'd/m/Y g:i:s A'
-        //     $formattedDate = $dateTime->format('d/m/Y g:i:s A');
-        //     // Update the date attribute with the formatted date
-        //     $info->update([
-        //         'date' => $formattedDate
-        //     ]);
-            
-        //     $invoices[] = $info;
-        // } 
+      
         return $investments;
     }
 
