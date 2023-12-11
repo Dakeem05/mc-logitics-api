@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\InvestmentUsd1;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,16 +20,29 @@ class TeamController extends Controller
 
         $referees = User::where('referer_code', $ref)->get();
 
-        $naira = [];
+        $invest = [];
+        $investments = [];
         $usdt = [];
         foreach ($referees as $user) {
-            $naira[] = $user->naira_balance;
+            // $naira[] = $user->naira_balance;
             $usdt[] = $user->usdt_balance;
+            // $invest[] = $user->team_earning;
+        // $investments = InvestmentUsd1::where('user_id', $user->id)->get();
         }
+        // if($investments){
+        // foreach ($investments as $user) {
+        //     $invest[] = $user->amount;
+        // // $investments[] = InvestmentUsd1::where('user_id', $user->id)->get();
+        // }
+        // }
+        
+        // $
+        // $user = User::where('id', $id)->first();
 
         return response()->json([
             'size' => $refereesCount,
-            'naira' => array_sum($naira),
+            'invest' => $id->team_earning,
+            // 'invest' => array_sum($invest) ,
             'usdt' => array_sum($usdt),
         ]);
     }

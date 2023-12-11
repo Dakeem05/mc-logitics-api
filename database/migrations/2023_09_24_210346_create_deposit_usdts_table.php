@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('used')->default(false);
             $table->string('status')->nullable();
             $table->string('pay_amount');
+            $table->string('date');
             $table->string('actually_paid')->nullable();
             $table->timestamps();
         });

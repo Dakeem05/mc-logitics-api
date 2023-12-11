@@ -38,6 +38,7 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::get('/teamList', [TeamController::class, 'list']);
         Route::get('/getInvestments', [AuthController::class, 'getInvestments']);
         Route::get('/getTransactions', [AuthController::class, 'getTransactions']);
+        Route::get('/getDeposits', [AuthController::class, 'getDeposits']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::post('/bindEmail', [AuthController::class, 'bindEmail']);
         Route::post('/changePassword', [AuthController::class, 'changePassword']);
@@ -53,6 +54,7 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::post('/createRecipient', [WithdrawController::class, 'createRecipient']);
         Route::get('/fetchBank', [WithdrawController::class, 'fetchBanks']);
         Route::get('/getUsdtWithdrawal', [WithdrawController::class, 'getUsdtWithdrawal']);
+        Route::get('/getWithdrawals', [AuthController::class, 'getWithdrawals']);
         Route::post('/initiateTransfer', [WithdrawController::class, 'initiateTransfer']);
         Route::post('/initiateUsdt', [WithdrawController::class, 'initiateUsdt']);
         Route::post('/invest', [InvestmentNaira1::class, 'store']);
@@ -67,8 +69,10 @@ Route::group(['middleware' => 'api', 'prefix' => '/V1'], function ($router) {
         Route::get('/admin/makeAdmin/{id}', [AdminController::class, 'makeAdmin']);
         Route::get('/admin/unmakeAdmin/{id}', [AdminController::class, 'unmakeAdmin']);
         Route::get('/admin/completeWithdrawal/{id}', [AdminController::class, 'completeWithdrawal']);
+        Route::get('/admin/completeNairaWithdrawal/{id}', [AdminController::class, 'completeNairaWithdrawal']);
         Route::get('/admin/acceptAllWithdrawal', [AdminController::class, 'acceptAllWithdrawal']);
         Route::get('/admin/withdrawal', [AdminController::class, 'getUsdtWithdrawal']);
+        Route::get('/admin/withdrawalNaira', [AdminController::class, 'getWithdrawals']);
     });
 
 });

@@ -86,6 +86,7 @@ class InvestmentUsd1 extends Controller
                     'start_date' => $start_date,
                     'is_usdt' => true,
                     'days' => 1,
+                    'time' => date('H:i', strtotime(Carbon::now())),
                     'end_date' => $end_period,
                 ]);
    
@@ -112,6 +113,7 @@ class InvestmentUsd1 extends Controller
                     'amount' => $request->amount,
                     'user_id' => Auth::id(),
                     'days' => 1,
+                    'time' => date('H:i', strtotime(Carbon::now())),
                     'start_date' => $start_date,
                     'is_usdt' => true,
                     'end_date' => $end_period,
@@ -120,7 +122,9 @@ class InvestmentUsd1 extends Controller
                 if($referer){
                 $bonus = $request->amount * 0.1;
                 $referer->update([
-                    'usdt_balance' => $referer->usdt_balance + $bonus
+                    'usdt_balance' => $referer->usdt_balance + $bonus,
+                    'team_earning' => $referer->team_earning + $bonus
+                    
                 ]);
                 $invoice = Invoice::create([
                     'date' => $start_date,

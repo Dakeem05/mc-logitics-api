@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('referer_code')->nullable();
             $table->boolean('has_invested')->default(false);
             $table->string('usdt_balance')->nullable();
+            $table->string('team_earning')->nullable();
             // $table->string('usdt_investment')->nullable();
             $table->string('naira_balance')->nullable();
             // $table->string('naira_investment')->nullable();

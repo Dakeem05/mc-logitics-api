@@ -16,6 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')
                     ->constrained('users')
                     ->cascadeOnDelete();
+            $table->string('date');
+            $table->string('user_bank_name');
+            $table->string('bank_name');
+            $table->string('account_number');
+            $table->boolean('is_sent')->default(false);
             $table->string('amount');
             $table->timestamps();
         });

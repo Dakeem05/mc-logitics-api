@@ -17,6 +17,7 @@ return new class extends Migration
                     ->constrained('users')
                     ->cascadeOnDelete();
             $table->string('reference');
+            $table->string('date');
             $table->boolean('is_usdt')->default(false);
             $table->boolean('used')->default(false);
             $table->string('email');
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

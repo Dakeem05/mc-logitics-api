@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UsdtWithdrawal extends Model
+class DepositNaira extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
-    protected $cast = [
-        'is_sent' => 'boolean',
-        'is_verified' => 'boolean',
+    protected $casts =[
+        'is_usdt' => 'boolean',
     ];
 }

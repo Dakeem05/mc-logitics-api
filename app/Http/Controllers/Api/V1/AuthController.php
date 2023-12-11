@@ -9,6 +9,8 @@ use App\Models\InvestmentUsd1;
 use App\Models\Invoice;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\DepositUsdt;
+use App\Models\Withdraw;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -153,7 +155,7 @@ class AuthController extends Controller
         } else{
             return ApiResponse::errorResponse("User doesn't exist or wrong details");
         }
-        } 
+    } 
 
     public function forgotPassword(Request $request)
     {
@@ -169,12 +171,22 @@ class AuthController extends Controller
             ]);
         } else {
             $user = User::where('email', $request->email)->first();
+            $data = $user->forgot_otp;
+            // return $data;
+            if($data == '') {
+                $user->sendApiEmailForgotPasswordNotification();
+                return ApiResponse::successResponse('Sent, check you mail');
+
+            } else{
+                $data = $user->forgot_otp->delete();
             $user->sendApiEmailForgotPasswordNotification();
             return ApiResponse::successResponse('Sent, check you mail');
+            }
             // return $user->id;
             
         }
     }
+    
     public function resendCode(Request $request)
     {
         $rules = [
@@ -283,6 +295,27 @@ class AuthController extends Controller
 
       
         return $investments;
+    }
+    
+    public function getDeposits()
+    {
+        $id = Auth::id();
+        $investments = DepositUsdt::where('user_id', $id)->latest()->paginate(10);
+
+        // $invoices = [];
+
+      
+        return $investments;
+    }
+
+    public function getWithdrawals()
+    {
+        $id = Auth::id();
+        $investments = Withdraw::where('user_id', $id)->latest()->paginate(10);
+
+        // $invoices = [];
+
+        return ApiResponse::successResponse($investments);
     }
 
     public function logout(Request $request)

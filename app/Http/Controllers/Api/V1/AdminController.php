@@ -8,6 +8,7 @@ use App\Models\DepositUsdt;
 use App\Models\Invoice;
 use App\Models\UsdtWithdrawal;
 use App\Models\User;
+use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -86,16 +87,35 @@ class AdminController extends Controller
         return ApiResponse::successResponse($withdrawals);
     }
 
+    public function getWithdrawals () 
+    {
+        $withdrawals = Withdraw::latest()->paginate(10);
+        return ApiResponse::successResponse($withdrawals);
+    }
+
     public function completeWithdrawal (string $id) 
     {
         $withdrawal = UsdtWithdrawal::where('id', $id)->first();
 
         $user = User::where('id', $withdrawal->user_id)->first();
-        $user->update([
-            'usdt_balance' => $user->usdt_balance - $withdrawal->amount
-        ]);
+        // $user->update([
+        //     'usdt_balance' => $user->usdt_balance - $withdrawal->amount
+        // ]);
         $withdrawal->update([
             'is_verified' => true,
+        ]);
+    }
+
+    public function completeNairaWithdrawal (string $id) 
+    {
+        $withdrawal = Withdraw::where('id', $id)->first();
+
+        // $user = User::where('id', $withdrawal->user_id)->first();
+        // $user->update([
+        //     'usdt_balance' => $user->usdt_balance - $withdrawal->amount
+        // ]);
+        $withdrawal->update([
+            'is_sent' => true,
         ]);
     }
 

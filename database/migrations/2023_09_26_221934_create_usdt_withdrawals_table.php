@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')
                     ->constrained('users')
                     ->cascadeOnDelete();
-            $table->boolean('is_sent')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->string('amount');
             $table->string('date');
+            $table->boolean('is_sent')->default(false);
             $table->string('status')->nullable();
             $table->string('address');
             $table->string('payout_id')->nullable();

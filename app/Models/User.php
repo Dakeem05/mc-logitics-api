@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'ref_code',
         'referer_code',
+        'team_earning',
         'has_invested',
         'username',
         'user_bank_name',
@@ -66,6 +67,11 @@ class User extends Authenticatable implements JWTSubject
     public function forgot_otp ():HasOne
     {
         return $this->hasOne(ForgotPasswordOtp::class);
+    }
+
+    public function withdraw ():HasOne
+    {
+        return $this->hasOne(Withdraw::class, 'user_id', 'id');
     }
 
     public function sendApiEmailForgotPasswordNotification()
